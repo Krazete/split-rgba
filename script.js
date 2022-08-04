@@ -37,9 +37,9 @@ function generateRGBA() {
         cellData[i % 4].data[Math.floor(i / 4) * 4] = imageData.data[i];
         cellData[i % 4].data[Math.floor(i / 4) * 4 + 1] = imageData.data[i];
         cellData[i % 4].data[Math.floor(i / 4) * 4 + 2] = imageData.data[i];
-        cellData[i % 4].data[Math.floor(i / 4) * 4 + 3] = 1;
+        cellData[i % 4].data[Math.floor(i / 4) * 4 + 3] = 255;
         cellData[i % 4 + 4].data[i] = imageData.data[i];
-        cellData[i % 4 + 4].data[Math.floor(i / 4) * 4 + 3] = 1;
+        cellData[i % 4 + 4].data[Math.floor(i / 4) * 4 + 3] = 255;
     }
     var cells = [
         document.getElementById("r0"),
