@@ -52,9 +52,11 @@ function generateRGBA() {
         document.getElementById("a1")
     ];
     for (var i = 0; i < 8; i++) {
-        var image = getImageFromImageData(cellData[i]);
-        cells[i].innerHTML = "";
-        cells[i].appendChild(image);
+        (function (i) {
+            var image = getImageFromImageData(cellData[i]);
+            cells[i].innerHTML = "";
+            cells[i].appendChild(image);
+        })(i);
     }
 }
 
