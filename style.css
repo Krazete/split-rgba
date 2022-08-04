@@ -1,0 +1,17 @@
+label {
+    display: block;
+    width: 400px;
+    height: 400px;
+}
+
+input[type='file'] {
+    display: none;
+}
+
+.flex {
+    display: flex;
+}
+
+.flex > div {
+    flex: 1
+}
