@@ -1,18 +1,21 @@
+var canvas = document.createElement("canvas");
+var context = canvas.getContext("2d");
+
+function resetCanvas(x, y) {
+    canvas.width = x;
+    canvas.height = y;
+    // canvas.clearRect(0, 0, x, y); // resizing already triggers a clear
+}
+
 function getImageDataFromImage(image) {
-    var canvas = document.createElement("canvas");
-    var context = canvas.getContext("2d");
-    canvas.width = image.width;
-    canvas.height = image.height;
+    resetCanvas(image.width, image.height);
     context.drawImage(image, 0, 0);
     return context.getImageData(0, 0, canvas.width, canvas.height);
 }
 
 function getImageFromImageData(imageData) {
     var image = new Image();
-    var canvas = document.createElement("canvas");
-    var context = canvas.getContext("2d");
-    canvas.width = imageData.width;
-    canvas.height = imageData.height;
+    resetCanvas(imageData.width, imageData.height);
     context.putImageData(imageData, 0, 0);
     image.src = canvas.toDataURL();
     return image;
@@ -20,11 +23,23 @@ function getImageFromImageData(imageData) {
 
 function generateRGBA() {
     var imageData = getImageDataFromImage(this);
-    var data = imageData.data;
-    var celldata = [[], [], [], [], [], [], [], []];
-    for (var i = 0; i < data.length; i++) {
-        celldata[i % 4] = celldata[i % 4].concat(data[i], data[i], data[i], 1]);
-        celldata[i % 4 + 4] = celldata[i % 4 + 4].concat(data[i], 0, 0, 1]);
+    var cellData = [
+        context.createImageData(imageData.width, imageData.height),
+        context.createImageData(imageData.width, imageData.height),
+        context.createImageData(imageData.width, imageData.height),
+        context.createImageData(imageData.width, imageData.height),
+        context.createImageData(imageData.width, imageData.height),
+        context.createImageData(imageData.width, imageData.height),
+        context.createImageData(imageData.width, imageData.height),
+        context.createImageData(imageData.width, imageData.height)
+    ];
+    for (var i = 0; i < imageData.data.length; i++) {
+        cellData[i % 4].data[Math.floor(i / 4) * 4] = imageData.data[i];
+        cellData[i % 4].data[Math.floor(i / 4) * 4 + 1] = imageData.data[i];
+        cellData[i % 4].data[Math.floor(i / 4) * 4 + 2] = imageData.data[i];
+        cellData[i % 4].data[Math.floor(i / 4) * 4 + 3] = 1;
+        cellData[i % 4 + 4].data[i] = imageData.data[i];
+        cellData[i % 4 + 4].data[Math.floor(i / 4) * 4 + 3] = 1;
     }
     var cells = [
         document.getElementById("r0"),
@@ -37,7 +52,7 @@ function generateRGBA() {
         document.getElementById("a1")
     ];
     for (var i = 0; i < 8; i++) {
-        var image = getImageFromImageData(celldata[i]);
+        var image = getImageFromImageData(cellData[i]);
         cells[i].innerHTML = "";
         cells[i].appendChild(image);
     }
