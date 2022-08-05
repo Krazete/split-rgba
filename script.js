@@ -38,8 +38,8 @@ function generateRGBA() {
         cellData[i % 4].data[Math.floor(i / 4) * 4 + 1] = imageData.data[i];
         cellData[i % 4].data[Math.floor(i / 4) * 4 + 2] = imageData.data[i];
         cellData[i % 4].data[Math.floor(i / 4) * 4 + 3] = 255;
-        cellData[i % 4 + 4].data[i] = imageData.data[i];
         cellData[i % 4 + 4].data[Math.floor(i / 4) * 4 + 3] = 255;
+        cellData[i % 4 + 4].data[i] = imageData.data[i];
     }
     var cells = [
         document.getElementById("r0"),
@@ -58,6 +58,9 @@ function generateRGBA() {
             cells[i].appendChild(image);
         })(i);
     }
+    var im = document.getElementById("im");
+    im.innerHTML = "";
+    im.appendChild(this);
 }
 
 function onInputLoad() {
@@ -75,9 +78,16 @@ function onInput() {
     }
 }
 
+function test() {
+    var image = new Image();
+    image.addEventListener("load", generateRGBA);
+    image.src = "./test.png";
+}
+
 function main() {
     var input = document.getElementById("input");
     input.addEventListener("input", onInput);
+    test();
 }
 
 window.addEventListener("DOMContentLoaded", main);
