@@ -1,4 +1,3 @@
-import * as THREE from "three";
 import {DDSLoader} from "./DDSLoader.js"; // https://unpkg.com/three@0.143.0/examples/jsm/loaders/DDSLoader.js, but I commented out the Unsupported FourCC error condition
 
 var canvas = document.createElement("canvas");
