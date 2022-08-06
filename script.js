@@ -31,7 +31,8 @@ function generateRGBA() {
         context.createImageData(imageData.width, imageData.height),
         context.createImageData(imageData.width, imageData.height),
         context.createImageData(imageData.width, imageData.height),
-        context.createImageData(imageData.width, imageData.height)
+        context.createImageData(imageData.width, imageData.height),
+        imageData
     ];
     for (var i = 0; i < imageData.data.length; i++) {
         cellData[i % 4].data[Math.floor(i / 4) * 4] = imageData.data[i];
@@ -49,39 +50,46 @@ function generateRGBA() {
         document.getElementById("r1"),
         document.getElementById("g1"),
         document.getElementById("b1"),
-        document.getElementById("a1")
+        document.getElementById("a1"),
+        document.getElementById("im")
     ];
-    for (var i = 0; i < 8; i++) {
-        (function (i) {
-            var image = getImageFromImageData(cellData[i]);
-            cells[i].innerHTML = "";
-            cells[i].appendChild(image);
-        })(i);
+    for (var i = 0; i < 9; i++) {
+        var image = getImageFromImageData(cellData[i]); // convert (this) from image to data to image again in case it has multiple frames (gif or video)
+        cells[i].innerHTML = "";
+        cells[i].appendChild(image);
     }
-    var im = document.getElementById("im");
-    im.innerHTML = "";
-    im.appendChild(this);
 }
 
-function onInputLoad() {
+function startGenerateRGBA(uri) {
     var image = new Image();
     image.addEventListener("load", generateRGBA);
-    image.src = this.result;
+    image.src = uri;
+}
+
+function onInputLoadImage() {
+    startGenerateRGBA(this.result);
+}
+
+function onInputLoadOther() {
+    startGenerateRGBA("./error.png");
+}
+
+function test() {
+    startGenerateRGBA("./test.png");
 }
 
 function onInput() {
     var file = this.files[0];
     if (file) {
         var reader = new FileReader();
-        reader.addEventListener("load", onInputLoad);
+        if (file.type.startsWith("image/") || file.type.startsWith("video/")) { // i shouldn't support videos since big files crash the site, but
+            reader.addEventListener("load", onInputLoadImage);
+        }
+        else {
+            reader.addEventListener("load", onInputLoadOther);
+        }
         reader.readAsDataURL(file);
     }
-}
-
-function test() {
-    var image = new Image();
-    image.addEventListener("load", generateRGBA);
-    image.src = "./test.png";
 }
 
 function main() {
