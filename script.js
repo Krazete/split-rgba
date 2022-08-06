@@ -68,18 +68,6 @@ function startGenerateRGBA(uri) {
     image.src = uri;
 }
 
-function onInputLoadImage() {
-    startGenerateRGBA(this.result);
-}
-
-function error() {
-    startGenerateRGBA("./error.png");
-}
-
-function test() {
-    startGenerateRGBA("./test.png");
-}
-
 function onDDSLoad(dds) {
     resetCanvas(dds.mipmaps[0].width, dds.mipmaps[0].height);
     var convertedData = context.createImageData(dds.mipmaps[0].width, dds.mipmaps[0].height);
@@ -110,15 +98,27 @@ function onInputLoadDDS() {
     loader.load(this.result, onDDSLoad);
 }
 
+function onInputLoadImage() {
+    startGenerateRGBA(this.result);
+}
+
+function error() {
+    startGenerateRGBA("./error.png");
+}
+
+function test() {
+    startGenerateRGBA("./test.png");
+}
+
 function onInput() {
     var file = this.files[0];
     if (file) {
         var reader = new FileReader();
-        if (file.type.startsWith("image/") || file.type.startsWith("video/")) { // i shouldn't support videos since big files crash the site, but
-            reader.addEventListener("load", onInputLoadImage);
-        }
-        else if (file.name.endsWith(".dds")) { // file.type for .dds is blank
+        if (file.name.endsWith(".dds")) { // file.type for .dds is blank
             reader.addEventListener("load", onInputLoadDDS);
+        }
+        else if (file.type.startsWith("image/") || file.type.startsWith("video/")) { // i shouldn't support videos since big files crash the site, but
+            reader.addEventListener("load", onInputLoadImage);
         }
         else {
             reader.addEventListener("load", error);
