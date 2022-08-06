@@ -1,3 +1,6 @@
+import * as THREE from "three";
+import {DDSLoader} from "./DDSLoader.js"; // https://unpkg.com/three@0.143.0/examples/jsm/loaders/DDSLoader.js, but I commented out the Unsupported FourCC error condition
+
 var canvas = document.createElement("canvas");
 var context = canvas.getContext("2d");
 
@@ -70,12 +73,42 @@ function onInputLoadImage() {
     startGenerateRGBA(this.result);
 }
 
-function onInputLoadOther() {
+function error() {
     startGenerateRGBA("./error.png");
 }
 
 function test() {
     startGenerateRGBA("./test.png");
+}
+
+function onDDSLoad(dds) {
+    resetCanvas(dds.mipmaps[0].width, dds.mipmaps[0].height);
+    var convertedData = context.createImageData(dds.mipmaps[0].width, dds.mipmaps[0].height);
+    for (var i = 0; i < dds.mipmaps[0].data.length; i++) { // accepted dds has data as bgra instead of rgba
+        if (i % 4 == 0) {
+            convertedData.data[i] = dds.mipmaps[0].data[i + 2];
+        }
+        else if ((i + 2) % 4 == 0) {
+            convertedData.data[i] = dds.mipmaps[0].data[i - 2];
+        }
+        else {
+            convertedData.data[i] = dds.mipmaps[0].data[i];
+        }
+    }
+    var uri = getImageFromImageData(convertedData).src;
+    if (convertedData.data.length == dds.mipmaps[0].data.length) {
+        startGenerateRGBA(uri);
+    }
+    else { // this will be common; i made this for ninjaripper, so i won't support other dds variants (for now?)
+        console.log("Error reading DDS file.");
+        error();
+        setTimeout(e=>startGenerateRGBA(uri), 1000);
+    }
+}
+
+function onInputLoadDDS() {
+    var loader = new DDSLoader();
+    loader.load(this.result, onDDSLoad);
 }
 
 function onInput() {
@@ -85,8 +118,11 @@ function onInput() {
         if (file.type.startsWith("image/") || file.type.startsWith("video/")) { // i shouldn't support videos since big files crash the site, but
             reader.addEventListener("load", onInputLoadImage);
         }
+        else if (file.name.endsWith(".dds")) { // file.type for .dds is blank
+            reader.addEventListener("load", onInputLoadDDS);
+        }
         else {
-            reader.addEventListener("load", onInputLoadOther);
+            reader.addEventListener("load", error);
         }
         reader.readAsDataURL(file);
     }
@@ -98,4 +134,5 @@ function main() {
     test();
 }
 
-window.addEventListener("DOMContentLoaded", main);
+// window.addEventListener("DOMContentLoaded", main); // modules load after this?
+main();

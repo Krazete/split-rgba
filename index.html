@@ -1,11 +1,13 @@
 <html>
 <head>
-    <title>Split RGBA</title>
     <link rel="stylesheet" href="./style.css">
-    <script src="./script.js"></script>
+    <title>Split RGBA</title>
+    <script async="" src="https://unpkg.com/es-module-shims@1.3.6/dist/es-module-shims.js"></script>
+    <script type="importmap">{"imports": {"three": "https://unpkg.com/three@0.143.0/build/three.module.js"}}</script>
+    <script type="module" src="./script.js"></script>
 </head>
 <body>
-    <input type="file" accept="image/*" id="input">
+    <input type="file" accept="image/*,.dds" id="input">
     <div class="grid">
         <div id="r0"></div>
         <div id="g0"></div>
