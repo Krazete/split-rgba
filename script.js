@@ -42,25 +42,26 @@ function generateRGBA() {
         cellData[i % 4].data[Math.floor(i / 4) * 4 + 2] = imageData.data[i];
         cellData[i % 4].data[Math.floor(i / 4) * 4 + 3] = 255;
         if (i % 4 < 3) {
-            cellData[i % 4 % 3 + 4].data[i] = 255;
+            cellData[i % 4 + 4].data[i] = 255;
             cellData[(i % 4 + 1) % 3 + 4].data[i] = imageData.data[i];
             cellData[(i % 4 + 2) % 3 + 4].data[i] = imageData.data[i];
             cellData[i % 4 + 4].data[Math.floor(i / 4) * 4 + 3] = 255;
+            cellData[7].data[i] = imageData.data[i];
         }
         else {
-            cellData[i % 4 + 4].data[Math.floor(i / 4) * 4 + 3] = imageData.data[i];
+            cellData[7].data[i] = 255;
         }
     }
     var cells = [
-        document.getElementById("r0"),
-        document.getElementById("g0"),
-        document.getElementById("b0"),
-        document.getElementById("a0"),
-        document.getElementById("r1"),
-        document.getElementById("g1"),
-        document.getElementById("b1"),
-        document.getElementById("a1"),
-        document.getElementById("im")
+        document.getElementById("r"),
+        document.getElementById("g"),
+        document.getElementById("b"),
+        document.getElementById("a"),
+        document.getElementById("gb"),
+        document.getElementById("rb"),
+        document.getElementById("rg"),
+        document.getElementById("rgb"),
+        document.getElementById("rgba")
     ];
     for (var i = 0; i < 9; i++) {
         var image = getImageFromImageData(cellData[i]); // convert (this) from image to data to image again in case it has multiple frames (gif or video)
