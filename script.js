@@ -23,8 +23,10 @@ function getImageFromImageData(imageData) {
     return image;
 }
 
-function generateRGBA() {
-    var imageData = getImageDataFromImage(this);
+function generateRGBA(imageData) {
+    if (!("data" in imageData & "width" in imageData & "height" in imageData)) {
+        imageData = getImageDataFromImage(this);
+    }
     var cellData = [
         context.createImageData(imageData.width, imageData.height),
         context.createImageData(imageData.width, imageData.height),
@@ -90,14 +92,13 @@ function onDDSLoad(dds) {
             convertedData.data[i] = dds.mipmaps[0].data[i];
         }
     }
-    var uri = getImageFromImageData(convertedData).src;
     if (convertedData.data.length == dds.mipmaps[0].data.length) {
-        startGenerateRGBA(uri);
+        generateRGBA(convertedData);
     }
     else { // this will be common; i made this for ninjaripper, so i won't support other dds variants (for now?)
         console.log("Error reading DDS file.");
         error();
-        setTimeout(e=>startGenerateRGBA(uri), 1000);
+        setTimeout(e=>generateRGBA(convertedData), 1000);
     }
 }
 
